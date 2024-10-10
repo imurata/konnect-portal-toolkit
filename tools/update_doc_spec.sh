@@ -5,6 +5,12 @@
 #  (duplicates will not result in the intended behaviour)
 # - The file name and title of the document must match (not including the file extension).
 
+. ~/work/env/konnect-env.sh
+
+if [ -z "$KONNECT_TOKEN" ]; then
+    echo "Failed to set KONNECT_TOKEN"
+    exit 1
+fi 
 
 # Function to check if the file exists and has the correct extension
 function check_file() {
