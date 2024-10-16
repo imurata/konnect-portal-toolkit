@@ -7,6 +7,10 @@
 
 . ~/work/env/konnect-env.sh
 
+if ! which gbase64 > /dev/null; then
+    alias gbase64=base64
+fi
+
 if [ -z "$KONNECT_TOKEN" ]; then
     echo "Failed to set KONNECT_TOKEN"
     exit 1
