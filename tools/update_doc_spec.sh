@@ -121,7 +121,16 @@ function update_spec() {
     if ! check_file "$file" "yaml"; then
         return 1
     fi
-    
+    # Get version ID
+    VERSION_ID=$(curl -X GET -s \
+        https://us.api.konghq.com/v2/api-products/${PRODUCT_ID}/product-versions \
+        -H "Authorization: Bearer $KONNECT_TOKEN" \
+        | jq -r '.data[] | select(.name == "'"$version"'") | .id')
+    if [ -z "$VERSION_ID" ]; then
+        echo "Error: Failed to get Version ID."
+        return 1
+    fi
+
     echo "Updating specification for file: $file to version: $version in API Product $PRODUCT_NAME"
     
     # Check if the specification is already uploaded
@@ -130,7 +139,6 @@ function update_spec() {
           https://us.api.konghq.com/v2/api-products/${PRODUCT_ID}/product-versions/${VERSION_ID}/specifications \
           -H "Authorization: Bearer $KONNECT_TOKEN" \
           | jq -r --arg filename "$filename" '.data[] | select(.name == $filename) | .id')
-    echo "*** $SPEC_ID ***"
     # Encode the file contents in base64
     CONTENT=$(gbase64 -w0 "$file")
     
@@ -160,7 +168,7 @@ function update_spec() {
     http_code=$(tail -n 1 <<< "$curl_response")
     # Check if the curl command succeeded
     if [[ "$http_code" -lt 200 || "$http_code" -ge 300 ]]; then
-        msg="Failed to $action specification."
+        msg="Failed to $action specification. (err: $curl_response)"
         return_code=1
     fi
     echo ""
@@ -183,15 +191,6 @@ while getopts "d:s:v:p:" opt; do
             ;;
         v)
             version=$OPTARG
-            # Get version ID
-            VERSION_ID=$(curl -X GET -s \
-                https://us.api.konghq.com/v2/api-products/${PRODUCT_ID}/product-versions \
-                -H "Authorization: Bearer $KONNECT_TOKEN" \
-                | jq -r '.data[] | select(.name == "'"$version"'") | .id')
-            if [ -z "$VERSION_ID" ]; then
-                echo "Error: Failed to get Version ID."
-                exit 1
-            fi
             ;;
         p)
             PRODUCT_NAME=$OPTARG
