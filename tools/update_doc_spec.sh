@@ -129,7 +129,7 @@ function update_spec() {
     VERSION_ID=$(curl -X GET -s \
         https://us.api.konghq.com/v2/api-products/${PRODUCT_ID}/product-versions \
         -H "Authorization: Bearer $KONNECT_TOKEN" \
-        | jq -r '.data[] | select(.name == "'"$version"'") | .id')
+        | jq -r '.data[] | select(.name == "'"$version"'") | .id' || true)
     if [ -z "$VERSION_ID" ]; then
         echo "Error: Failed to get Version ID."
         return 1
