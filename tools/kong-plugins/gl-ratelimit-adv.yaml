@@ -1,0 +1,26 @@
+_format_version: "1.0"
+add-plugins:
+- selectors:
+  - $
+  overwrite: false
+  plugins:
+  - name: rate-limiting-advanced
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
+    config:
+      dictionary_name: kong_rate_limiting_counters
+      error_code: 429
+      error_message: API rate limit exceeded
+      identifier: ip
+      limit:
+      - 10000
+      namespace: httpbin
+      retry_after_jitter_max: 0
+      strategy: local
+      sync_rate: null
+      window_size:
+      - 30
+      window_type: sliding

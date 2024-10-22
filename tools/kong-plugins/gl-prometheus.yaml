@@ -1,0 +1,18 @@
+_format_version: "1.0"
+add-plugins:
+- selectors:
+  - $
+  overwrite: false
+  plugins:
+  - name: prometheus
+    config:
+      bandwidth_metrics: true
+      latency_metrics: true
+      per_consumer: true
+      status_code_metrics: true
+      upstream_health_metrics: true
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
