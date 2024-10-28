@@ -48,8 +48,9 @@ inso lint spec $SPECFILE --verbose
 echo "*** 2. Convert API Spec to deck format ***"
 deck file openapi2kong -s $SPECFILE -o ./kong.yaml --verbose 9
 
-echo "*** 3. Add global plugins ***"
+echo "*** 3. Add global plugins and consumers ***"
 deck file add-plugins -s ./kong.yaml -o ./kong.yaml kong-plugins/*
+deck file merge consumers/* kong.yaml -o kong.yaml
 
 echo "*** 4. Add tag ***"
 deck file add-tags -s ./kong.yaml -o ./kong.yaml $TAG
